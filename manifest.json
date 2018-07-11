@@ -15,8 +15,7 @@
 
     //Type of actions: Browser, Page, or none
     "browser_action": {
-	"default_title": "Daddy loves Norah"//,
-	//"default_popup": "popup.html"
+	"default_title": "Speak the selection"
     },
     "background": {
     	"scripts": ["background.js"],
