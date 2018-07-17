@@ -9,8 +9,11 @@ const punctuations = {"。":".",
 		"？":"?",
 		"：":":",
 		"“":"",
+		"\"":"",
+		"\'":"",
 		"”":"",
 		"\"":"",
+		      "\n":",",
 		"、":","
 	       };
 
@@ -35,14 +38,23 @@ function openCC() {
     var injection = " \
     var div = document.getElementById('JustTTS_CC'); \
     if (div === null) { \
+        var r=window.getSelection().getRangeAt(0).getBoundingClientRect();\
+        var relative=document.body.parentNode.getBoundingClientRect();\
+        var ccTop = (r.bottom -relative.top)+'px';\
+        var ccLeft = (r.left - relative.left)+'px'; \
 	var div = document.createElement('DIV'); \
 	div.setAttribute('id', 'JustTTS_CC'); \
-	div.setAttribute('style','background-color:#DDDDDD;width:400px;height:50px;position:absolute;left:0;right:0;top:90%; bottom:10%;margin:auto;max-width:100%;max-height:100%;overflow:auto;cursor: move;z-index:1000'); \
+	div.setAttribute('style','background-color:#4d2600; color:#FFFFFF; position:absolute;width:250px;height:50px;margin:auto;max-width:100%;max-height:100%;overflow:auto;cursor: move;z-index:1000;opacity: 0.9;'); \
+        div.style.top = ccTop;\
+        div.style.left = ccLeft;\
 	document.body.appendChild(div); \
-} ; ";
+    } ;";
+    
 
     chrome.tabs.executeScript(null, {
-	code: injection
+	 code: injection
+	 // code: popup
+	//file: "cc.js"
     });
     
 }
@@ -63,7 +75,6 @@ function setCC(text) {
     var cc = document.getElementById('JustTTS_CC'); \
     if (cc !== null) \
         cc.innerHTML = '" + text + "'; ";
-    
     chrome.tabs.executeScript(null, {
 	code: injection
     });
