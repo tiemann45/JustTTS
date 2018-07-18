@@ -1,6 +1,6 @@
 {
     "name": "JustTTS",
-    "version":"1.0.3",
+    "version":"1.0.4",
     "manifest_version":2,
     "description": "A sidekick for my lovely daughter to learn Chinese. Just select the text and click the extension icon to listen.",
     "icons": {
