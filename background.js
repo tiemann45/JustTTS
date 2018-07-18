@@ -13,7 +13,7 @@ const punctuations = {"。":".",
 		"\'":"",
 		"”":"",
 		"\"":"",
-		      "\n":",",
+	        "\n":",",
 		"、":","
 	       };
 
@@ -107,25 +107,42 @@ async function speak(textToSpeak, language, rate) {
 }
 
 // Event Handler
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//     if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+// 	chrome.tabs.executeScript( {
+// 	    code: "window.getSelection().toString();"
+// 	}, function(selection) {
+// 	    if (selection.length > 0) {
+// 		// Fetch saved setting
+// 		var savedLanguage = localStorage["JustTTS_Lang"];
+// 		if (!savedLanguage)
+// 		    savedLanguage = "en-US";
+
+// 		var savedRate = localStorage["JustTTS_Rate"];
+// 		if (!savedRate)
+// 		    savedRate = 1.0;
+
+// 		speak(selection[0], savedLanguage, savedRate);
+// 	    }
+// 	});
+//     } else {
+// 	window.alert("Chrome speech synthesis is not available!!!");
+//     }
+// });
+
 chrome.browserAction.onClicked.addListener(function(tab) {
-    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-	chrome.tabs.executeScript( {
-	    code: "window.getSelection().toString();"
-	}, function(selection) {
-	    if (selection.length > 0) {
-		// Fetch saved setting
-		var savedLanguage = localStorage["JustTTS_Lang"];
-		if (!savedLanguage)
-		    savedLanguage = "en-US";
+    // Fetch saved setting
+    var savedLanguage = localStorage["JustTTS_Lang"];
+    if (!savedLanguage)
+	savedLanguage = "en-US";
 
-		var savedRate = localStorage["JustTTS_Rate"];
-		if (!savedRate)
-		    savedRate = 1.0;
+    var savedRate = localStorage["JustTTS_Rate"];
+    if (!savedRate)
+	savedRate = 1.0;
 
-		speak(selection[0], savedLanguage, savedRate);
-	    }
-	});
-    } else {
-	window.alert("Chrome speech synthesis is not available!!!");
-    }
+    chrome.tabs.executeScript(tab.id, {
+	code: 'var savedLanguage = "'+savedLanguage+'"; var savedRate='+savedRate+';'
+    }, function() {
+        chrome.tabs.executeScript(tab.id, {'file': 'createPopup.js'}, function callBackStub(){})
+    });
 });
