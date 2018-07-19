@@ -132,16 +132,16 @@ async function speak(textToSpeak, language, rate) {
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     // Fetch saved setting
-    var savedLanguage = localStorage["JustTTS_Lang"];
-    if (!savedLanguage)
-	savedLanguage = "en-US";
+    var savedVoiceName = localStorage["JustTTS_VoiceName"];
+    if (!savedVoiceName)
+	savedVoiceName = "Unknown";
 
     var savedRate = localStorage["JustTTS_Rate"];
     if (!savedRate)
 	savedRate = 1.0;
 
     chrome.tabs.executeScript(tab.id, {
-	code: 'var savedLanguage = "'+savedLanguage+'"; var savedRate='+savedRate+';'
+	code: 'var savedVoiceName = "'+savedVoiceName+'"; var savedRate='+savedRate+';'
     }, function() {
         chrome.tabs.executeScript(tab.id, {'file': 'createPopup.js'}, function callBackStub(){})
     });

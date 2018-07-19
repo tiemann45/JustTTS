@@ -20,6 +20,7 @@ function convertChinesePunctuation(text) {
 		    "！":"!",
 		    "？":"?",
 		    "：":":",
+		    "；":";",
 		    "“":"",
 		    "\"":"",
 		    "\'":"",
@@ -50,19 +51,29 @@ function initCC(){
 
     var div = document.createElement('DIV'); 
     div.setAttribute('id', 'JustTTS_CC'); 
-    div.setAttribute('style','background-color:#3cba54; color:#FFFFFF; position:absolute;width:250px;height:106px;margin:auto;max-width:100%;max-height:100%;overflow:auto;cursor: move;z-index:1000;opacity: 0.9;');
+    div.setAttribute('style',
+		     'background-color:#3cba54; color:#FFFFFF; position:absolute;width:250px;height:106px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;');
     document.body.appendChild(div); 
     div.style.top = ccTop;
     div.style.left = ccLeft;
 
     var selection = window.getSelection().toString();
-    div.innerHTML = "<table><tr height='64px'><td><label id='JustTTS_CC_Sentence'>&nbsp;</label></td></tr><tr height='32px'><td>\
-    <img id='JustTTS_CC_Stop'/> \
-    <img id='JustTTS_CC_PausePlay'/> \
-    <img id='JustTTS_CC_Prev'/> \
-    <img id='JustTTS_CC_Next' border='1px' border-color='Black'/> \
-    <img id='JustTTS_CC_Repeat'/></td></tr></table>";
-
+    div.innerHTML = "\
+<table>\
+    <tr height='64px'>\
+        <td><label id='JustTTS_CC_Sentence'>&nbsp;</label></td>\
+    </tr>\
+    <tr height='32px'>\
+        <td>\
+	    <img id='JustTTS_CC_Stop'/> \
+	    <img id='JustTTS_CC_PausePlay'/> \
+	    <img id='JustTTS_CC_Prev'/> \
+	    <img id='JustTTS_CC_Next' border='1px' border-color='Black'/> \
+	    <img id='JustTTS_CC_Repeat'/>\
+        </td>\
+    </tr>\
+</table>";
+    // Controls
     var imgPrev = chrome.extension.getURL("img/Prev32.png");
     var btnPrev = document.getElementById('JustTTS_CC_Prev');
     btnPrev.src = imgPrev;
@@ -140,12 +151,13 @@ function updateButtonStatus() {
     btnNext.style.visibility = (state !== "play" && index < (numSentences - 1) ? "visible" : "hidden");
     btnRepeat.style.visibility = (state === "play" ? "hidden" : "visible");
 }
-async function speak(textToSpeak, language, rate) {
+
+async function speak(textToSpeak, voice, rate) {
     var convertedText = convertChinesePunctuation(textToSpeak);
-    sentences = convertedText.split(/[.,!?:]+/).filter((x) => x.length > 0);  
+    sentences = convertedText.split(/[.,!?:;]+/).filter((x) => x.length > 0);  
     numSentences = sentences.length;
     var u = new SpeechSynthesisUtterance();
-    u.lang = language; 
+    u.voice = voice; 
     u.rate = rate;
     initCC();
     for (index=0;index< sentences.length;) {
@@ -187,12 +199,31 @@ async function speak(textToSpeak, language, rate) {
 }
 
 
-// main()
 
-
-selection = window.getSelection().toString();
-if (selection.length > 0) {
-    speak(selection, savedLanguage, savedRate);
+async function readSelection() {
+    selection = window.getSelection().toString();
+    if (selection.length > 0) {
+	var savedVoice = null;
+	var tryCount = 0;
+	while(savedVoice === null && tryCount++ < 30) {
+	    await sleep(100);
+	    var voices = speechSynthesis.getVoices();
+	    if (voices.length > 0 && savedVoice === null) {
+		for (var i=0;i< voices.length;i++) {
+		    if (voices[i].name === savedVoiceName ||
+			(savedVoiceName === "Unknown" && voices[i].lang === "en-US")) {
+			savedVoice = voices[i];
+		    }
+		}
+	    }
+	}
+	if (savedVoice === null)
+	    msg("No voice available!!!");
+	else {
+	    speak(selection, savedVoice, savedRate);
+	}
+    }
 }
 
+readSelection();
 // https://icon-icons.com/pack/Music-Player-Controls-Blue-Icons/1134
