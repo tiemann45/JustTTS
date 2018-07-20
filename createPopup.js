@@ -49,26 +49,26 @@ function initCC(){
     var ccTop = (r.bottom -relative.top)+'px';
     var ccLeft = (r.left - relative.left)+'px';
 
-    var div = document.createElement('DIV'); 
-    div.setAttribute('id', 'JustTTS_CC'); 
+    var div = document.createElement('SPAN'); 
+    div.setAttribute('id', 'JustTTS_CC');
+    div.setAttribute('padding','0');
     div.setAttribute('style',
-		     'background-color:#3cba54; color:#FFFFFF; position:absolute;width:250px;height:106px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;');
+		     'background-color:#3cba54; color:#FFFFFF; position:absolute;width:200px;height:130px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;border-radius: 10px');
     document.body.appendChild(div); 
     div.style.top = ccTop;
     div.style.left = ccLeft;
 
     var selection = window.getSelection().toString();
-    div.innerHTML = "\
-<table>\
-    <tr height='64px'>\
-        <td><label id='JustTTS_CC_Sentence'>&nbsp;</label></td>\
+    div.innerHTML = "<table border=0px cellpadding=0px>\
+    <tr height=80px>\
+        <td><font size='3'><label id='JustTTS_CC_Sentence'>&nbsp;</label></font>	</td>\
     </tr>\
-    <tr height='32px'>\
+    <tr height=40px>\
         <td>\
 	    <img id='JustTTS_CC_Stop'/> \
 	    <img id='JustTTS_CC_PausePlay'/> \
 	    <img id='JustTTS_CC_Prev'/> \
-	    <img id='JustTTS_CC_Next' border='1px' border-color='Black'/> \
+	    <img id='JustTTS_CC_Next'/> \
 	    <img id='JustTTS_CC_Repeat'/>\
         </td>\
     </tr>\
@@ -153,7 +153,12 @@ function updateButtonStatus() {
 }
 
 async function speak(textToSpeak, voice, rate) {
+    // Convert Chinese punctuations
     var convertedText = convertChinesePunctuation(textToSpeak);
+    // Preserve numeric period and comma
+    convertedText = convertedText.replace(/\.(\d+)/g,'<period>$1');
+    convertedText = convertedText.replace(/\,(\d+)/g,'<comma>$1');
+    // Split into sentences
     sentences = convertedText.split(/[.,!?:;]+/).filter((x) => x.length > 0);  
     numSentences = sentences.length;
     var u = new SpeechSynthesisUtterance();
@@ -164,7 +169,7 @@ async function speak(textToSpeak, voice, rate) {
 	// Update button status
 	updateButtonStatus();
 	// To speak
-	u.text = sentences[index];
+	u.text = sentences[index].replace(/<period>/g,'.').replace(/<comma>/g,','); // Restore numeric period and comma
 	setCC(u.text);
 	speechSynthesis.speak(u);
 
