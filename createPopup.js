@@ -35,6 +35,16 @@ function convertChinesePunctuation(text) {
     return res;
 }
 
+function selectElement(element) {
+    //Before we copy, we are going to select the text.
+    var text = document.getElementById(element);
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(text);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
 // Global Variables
 var sentences = [];
 var index = -1;
@@ -135,8 +145,10 @@ function closeCC() {
 
 function setCC(text) {
     var cc = document.getElementById('JustTTS_CC_Sentence'); 
-    if (cc !== null) 
+    if (cc !== null) { 
         cc.innerHTML = text;
+        selectElement('JustTTS_CC_Sentence'); 
+    }
 } 
 
 function msg(m) {
