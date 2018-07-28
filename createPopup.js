@@ -63,25 +63,27 @@ function initCC(){
     div.setAttribute('id', 'JustTTS_CC');
     div.setAttribute('padding','0');
     div.setAttribute('style',
-		     'background-color:#3cba54; color:#FFFFFF; position:absolute;width:200px;height:130px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;border-radius: 10px');
+		     'all:unset;background-color:#3cba54; color:#FFFFFF; position:absolute;width:400px;height:130px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;border-radius: 10px;padding:10px');
     document.body.appendChild(div); 
     div.style.top = ccTop;
     div.style.left = ccLeft;
 
     var selection = window.getSelection().toString();
-    div.innerHTML = "<table border=0px cellpadding=0px>\
-    <tr height=80px>\
-        <td><font size='3'><label id='JustTTS_CC_Sentence'>&nbsp;</label></font>	</td>\
+    div.innerHTML = "<table width=400px height=122px style='all:unset;border-width:0px;border-spacing:0px;width:400px;height:122px;display:grid'>\
+    <tbody style='all:unset;'>\
+    <tr style='all: unset;height:90px;display:grid'>\
+        <td style='all:unset;'><div style='all:unset; overflow:auto'><label id='JustTTS_CC_Sentence' style='all:unset;font-size:1.25em;font-family:Helvetica;'>&nbsp;</label></div></td>\
     </tr>\
-    <tr height=40px>\
-        <td>\
-	    <img id='JustTTS_CC_Stop'/> \
-	    <img id='JustTTS_CC_PausePlay'/> \
-	    <img id='JustTTS_CC_Prev'/> \
-	    <img id='JustTTS_CC_Next'/> \
-	    <img id='JustTTS_CC_Repeat'/>\
+    <tr  style='all: unset;height:32px;display:grid'>\
+        <td style='all: unset;height:32px '>\
+            <img id='JustTTS_CC_Stop' style='all:unset;display:inline; height:auto; width:auto'/> \
+	    <img id='JustTTS_CC_PausePlay' style='all:unset;display:inline; height:auto; width:auto'/> \
+	    <img id='JustTTS_CC_Prev' style='all:unset;display:inline; height:auto; width:auto'/> \
+	    <img id='JustTTS_CC_Next' style='all:unset;display:inline; height:auto; width:auto'/> \
+	    <img id='JustTTS_CC_Repeat' style='all:unset;display:inline; height:auto; width:auto'/>\
         </td>\
     </tr>\
+    </tbody>\
 </table>";
     // Controls
     var imgPrev = chrome.extension.getURL("img/Prev32.png");
@@ -147,7 +149,9 @@ function setCC(text) {
     var cc = document.getElementById('JustTTS_CC_Sentence'); 
     if (cc !== null) { 
         cc.innerHTML = text;
-        selectElement('JustTTS_CC_Sentence'); 
+	if (savedAutoSelect){
+            selectElement('JustTTS_CC_Sentence'); 
+	}
     }
 } 
 

@@ -15,6 +15,10 @@ function populateData() {
     if (!savedRate)
 	savedRate = 1.0;
 
+    var savedAutoSelect = localStorage["JustTTS_AutoSelect"];
+    if ("savedAutoSelect" == undefined){
+	savedAutoSelect = false;
+    }
     // Update UI
     var voiceSelect = document.getElementById("voiceSelect");
     var voices = speechSynthesis.getVoices();
@@ -30,14 +34,17 @@ function populateData() {
 	}
     }
     document.getElementById('rate').value = savedRate;
+    document.getElementById('autoSelect').checked = (savedAutoSelect === 'true');
 }
 
 function saveData() {
     var voiceSelect = document.getElementById("voiceSelect");
     var rateInput = document.getElementById("rate");
+    var autoSelectInput = document.getElementById("autoSelect");
     var message = document.getElementById("message");
     localStorage["JustTTS_VoiceName"] = voiceSelect.children[voiceSelect.selectedIndex].textContent;
     localStorage["JustTTS_Rate"] = rateInput.value;
+    localStorage["JustTTS_AutoSelect"] = autoSelectInput.checked;
     message.innerHTML = "Data saved successfully";
     setTimeout(function(){
 	message.innerHTML = "";

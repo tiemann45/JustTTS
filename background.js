@@ -12,8 +12,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     if (!savedRate)
 	savedRate = 1.0;
 
+    var savedAutoSelect = localStorage["JustTTS_AutoSelect"];
+    if ("savedAutoSelect" == undefined){
+	savedAutoSelect = false;
+    }
+
     chrome.tabs.executeScript(tab.id, {
-	code: 'var savedVoiceName = "'+savedVoiceName+'"; var savedRate='+savedRate+';'
+	code: 'var savedVoiceName = "'+savedVoiceName+'"; var savedRate='+savedRate+'; var savedAutoSelect='+savedAutoSelect+';'
     }, function() {
         chrome.tabs.executeScript(tab.id, {'file': 'createPopup.js'}, function callBackStub(){})
     });
