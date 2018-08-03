@@ -23,7 +23,7 @@ function convertChinesePunctuation(text) {
 		    "；":";",
 		    "“":"",
 		    "\"":"",
-		    "\'":"",
+		    //"\'":"",
 		    "”":"",
 		    "\"":"",
 		    "\n":",",
@@ -63,7 +63,7 @@ function initCC(){
     div.setAttribute('id', 'JustTTS_CC');
     div.setAttribute('padding','0');
     div.setAttribute('style',
-		     'all:unset;background-color:#3cba54; color:#FFFFFF; position:absolute;width:400px;height:130px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;border-radius: 10px;padding:10px');
+		     'all:unset;background-color:#3cba54; color:#FFFFFF; position:absolute;width:400px;height:122px;margin:auto;max-width:100%;max-height:100%;overflow:auto;z-index:1000;opacity: 0.9;border-radius: 10px;padding:10px');
     document.body.appendChild(div); 
     div.style.top = ccTop;
     div.style.left = ccLeft;
@@ -153,7 +153,7 @@ function setCC(text) {
             selectElement('JustTTS_CC_Sentence'); 
 	}
     }
-} 
+}
 
 function msg(m) {
     alert(m);
@@ -238,11 +238,11 @@ async function readSelection() {
 		}
 	    }
 	}
-	if (savedVoice === null)
-	    msg("No voice available!!!");
-	else {
+
+	if (savedVoice !== null)
 	    speak(selection, savedVoice, savedRate);
-	}
+	else 
+	    msg("No voice available!!!");
     }
 }
 
